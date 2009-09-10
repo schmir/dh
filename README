@@ -1,0 +1,69 @@
+/*
+
+    Define author
+        John Kelly, October 6, 2007
+
+    Define copyright
+        Copyright John Kelly, 2007. All rights reserved.
+
+    Define license
+        Licensed under the Apache License, Version 2.0 (the "License");
+        you may not use this work except in compliance with the License.
+        You may obtain a copy of the License at:
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Define symbols and (words)
+        dh ...........  daemon helper
+
+
+    Define ideas
+
+    The daemon helper is a utility program which serves as a wrapper for
+    starting any program or shell command as a daemon.
+
+    Before developing the daemon helper, I found sundry daemon utilities
+    available for download, but none of them worked the way I wanted one
+    to work, so off to work I went ...
+
+    Its usage is simple:  dh [-p lock.pid] daemon args
+
+    The "daemon" can be a program or shell command, and the lock.pid, if
+    unspecified, will default to the base name of the daemon plus a .pid
+    suffix.  The lock.pid name is used to prevent inadvertently starting
+    multiple instances of the same daemon; specifying different lock.pid
+    names on successive invocations will circumvent that control.
+
+    The lock.pid file also serves as a pid file and initial log file for
+    the daemon.  The pid alone is on the first line, and the second line
+    contains the process group identifier.  The third line begins a list
+    of environment variables and their values.  Then follows a timestamp
+    and startup message.  Standard output and standard error are sent to
+    the file, until redirected by the daemon to some other destination.
+
+    When redirecting both standard output and standard error, the daemon
+    must first duplicate one of the file descriptors, standard output or
+    standard error, to keep a file descriptor open and holding a lock on
+    the lock.pid file.  For example, to use redirection in a shell:
+
+    exec 3>&2 &> /var/log/mydaemon
+
+    The daemon helper is written in C in accordance with the double fork
+    recommendation of W. Richard Stevens.  I use it on Linux, perhaps it
+    can work elsewhere too.  Success reports are welcome, but please say
+    no evil, and keep failures to yourself.  :-D
+
+    My principal motivation for developing the daemon helper was to have
+    a tool which eliminates the need for coding daemon logic in programs
+    or scripts.  In the tradition of other UNIX command line tools which
+    have short names, dh is its name.
+
+    For example, to run a shell pipeline as a daemon:
+
+    dh -p mydaemon.pid sh -c 'echo abc | cat'
+
+
+*/
+
+
+
+

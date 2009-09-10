@@ -1,0 +1,11 @@
+-i4
+-nut
+-br
+-ce
+-cli0
+-d0
+-di0
+-nfc1
+-nlp
+-npsl
+-psl
