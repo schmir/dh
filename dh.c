@@ -102,6 +102,23 @@ logtime (char *tt, size_t tu)
     }
 }
 
+static void
+clear_environment()
+{
+    char *path =
+        "/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin";
+
+    *environ = NULL;
+    if (setenv ("SHELL", "/bin/sh", 1) == -1) {
+	printf ("failure setting SHELL: %s\n", strerror (errno));
+	exit (EXIT_FAILURE);
+    }
+    if (setenv ("PATH", path, 1) == -1) {
+	printf ("failure setting PATH: %s\n", strerror (errno));
+	exit (EXIT_FAILURE);
+    }
+}
+
 int
 main (int argc, char **argv)
 {
@@ -123,19 +140,19 @@ main (int argc, char **argv)
     char *lockdir;
     char *lockfile;
     char *lockname;
-    char *path =
-        "/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin";
     char *rundir = "/var/run/dh";
     char *this;
     char **that;
     char ts[512];
     char tt[128];
+    int clear;
 
     errno = 0;
     opterr = 0;
     usage = 0;
     lockname = NULL;
-    while (!usage && (tn = getopt (argc, argv, "+p:")) != -1) {
+    clear=0;
+    while (!usage && (tn = getopt (argc, argv, "+p:c")) != -1) {
         switch (tn) {
         case 'p':
             lockname = optarg;
@@ -144,6 +161,9 @@ main (int argc, char **argv)
                 usage = 1;
             }
             break;
+	case 'c':
+	    clear = 1;
+	    break;
         default:
             usage = 1;
         }
@@ -159,7 +179,7 @@ main (int argc, char **argv)
         }
     }
     if (usage) {
-        fprintf (stderr, "Usage: %s [-p lock.pid] daemon args\n",
+        fprintf (stderr, "Usage: %s [-c] [-p lock.pid] daemon args\n",
             basename (*argv));
         exit (EXIT_FAILURE);
     }
@@ -521,15 +541,9 @@ main (int argc, char **argv)
                     strerror (errno));
                 exit (EXIT_FAILURE);
             }
-            *environ = NULL;
-            if (setenv ("SHELL", "/bin/sh", 1) == -1) {
-                printf ("failure setting SHELL: %s\n", strerror (errno));
-                exit (EXIT_FAILURE);
-            }
-            if (setenv ("PATH", path, 1) == -1) {
-                printf ("failure setting PATH: %s\n", strerror (errno));
-                exit (EXIT_FAILURE);
-            }
+	    if (clear) {
+		clear_environment();
+	    }
             printf ("%d\n", getpid ());
             printf ("PGID=%d\n", getpgrp ());
             for (that = environ; that && *that; that++) {
