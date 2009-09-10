@@ -3,9 +3,11 @@ rundir = /var/run/dh
 
 CC = gcc
 CFLAGS = -Wall -O2
+DHVERSION = $(shell git describe --tags)
 
-dh : dh.c
-	${CC} ${CFLAGS} -o dh dh.c
+
+dh: 
+	${CC} ${CFLAGS} -o dh dh.c -DDHVERSION=\"$(DHVERSION)\"
 
 install : dh
 	@bindir=${bindir} rundir=${rundir} sh Sh.install

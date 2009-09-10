@@ -179,7 +179,8 @@ main (int argc, char **argv)
         }
     }
     if (usage) {
-        fprintf (stderr, "Usage: %s [-c] [-p lock.pid] daemon args\n",
+        fprintf (stderr, "Usage: %s [-c] [-p lock.pid] daemon args\n" 
+                          "[" DHVERSION "]\n",
             basename (*argv));
         exit (EXIT_FAILURE);
     }
