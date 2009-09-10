@@ -2,7 +2,7 @@ bindir = /usr/local/bin
 rundir = /var/run/dh
 
 CC = gcc
-CFLAGS = -Wall -Werror -O2
+CFLAGS = -Wall -O2
 
 dh : dh.c
 	${CC} ${CFLAGS} -o dh dh.c
