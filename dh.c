@@ -52,30 +52,6 @@
 
 extern char **environ;
 
-static void
-trim (char **ts)
-{
-    unsigned char *exam;
-    unsigned char *keep;
-
-    exam = (unsigned char *) *ts;
-    while (*exam && isspace (*exam)) {
-        ++exam;
-    }
-    *ts = (char *) exam;
-    if (!*exam) {
-        return;
-    }
-    keep = exam;
-    while (*++exam) {
-        if (!isspace (*exam)) {
-            keep = exam;
-        }
-    }
-    if (*++keep) {
-        *keep = '\0';
-    }
-}
 
 static void
 logtime (char *tt, size_t tu)
@@ -156,7 +132,6 @@ main (int argc, char **argv)
         switch (tn) {
         case 'p':
             lockname = optarg;
-            trim (&lockname);
             if (!*lockname) {
                 usage = 1;
             }
@@ -172,7 +147,6 @@ main (int argc, char **argv)
         if (argc - optind < 1) {
             usage = 1;
         } else {
-            trim (&(argv[optind]));
             if (!*argv[optind]) {
                 usage = 1;
             }
