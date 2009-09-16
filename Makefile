@@ -2,7 +2,7 @@ bindir = /usr/local/bin
 rundir = /var/run/dh
 
 CC = gcc
-CFLAGS = -Wall -O2
+CFLAGS = -Wall -O2 -D_GNU_SOURCE
 DHVERSION = $(shell git describe --tags)
 
 

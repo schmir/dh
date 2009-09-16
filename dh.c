@@ -472,7 +472,7 @@ main (int argc, char **argv)
                 perror ("failure closing STDOUT");
                 exit (EXIT_FAILURE);
             }
-            flags = O_WRONLY | O_CREAT;
+            flags = O_WRONLY | O_CREAT | O_NOFOLLOW;
             mode = S_IRUSR | S_IWUSR | S_IRGRP;
             if ((tn = open (lockfile, flags, mode)) != STDOUT_FILENO) {
                 if (tn != -1) {
