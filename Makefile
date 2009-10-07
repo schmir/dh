@@ -1,4 +1,4 @@
-bindir = /usr/local/bin
+bindir = /bin
 rundir = /var/run/dh
 
 CC = gcc
