@@ -9,14 +9,12 @@ DHVERSION = $(shell git describe --tags)
 dh::
 	${CC} ${CFLAGS} -o dh dh.c -DDHVERSION=\"$(DHVERSION)\"
 
-install : dh
-	@bindir=${bindir} rundir=${rundir} sh Sh.install
+install:: dh
+	install -m 1777 -d ${rundir}
+	install -m 755 -d ${bindir}
+	install -m 755 -p -s dh ${bindir}
 
-clean :
+clean:
 	rm -f dh *~
 
 .PHONY : clean install
-
-
-
-
