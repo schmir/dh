@@ -6,7 +6,7 @@ CFLAGS = -Wall -O2 -D_GNU_SOURCE
 DHVERSION = $(shell git describe --tags)
 
 
-dh: 
+dh::
 	${CC} ${CFLAGS} -o dh dh.c -DDHVERSION=\"$(DHVERSION)\"
 
 install : dh
