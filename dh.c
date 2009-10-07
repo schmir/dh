@@ -171,7 +171,7 @@ main (int argc, char **argv)
     }
     (void) sigfillset (&signow.sa_mask);
     signow.sa_flags = 0;
-    signow.sa_handler = SIG_IGN;
+    signow.sa_handler = SIG_DFL;
     if (sigaction (SIGINT, &signow, NULL) == -1) {
         perror ("failure initializing SIGINT action");
         exit (EXIT_FAILURE);
@@ -192,7 +192,7 @@ main (int argc, char **argv)
         perror ("failure initializing SIGTTOU action");
         exit (EXIT_FAILURE);
     }
-    signow.sa_handler = SIG_DFL;
+    /* signow.sa_handler = SIG_DFL; */
     if (sigaction (SIGHUP, &signow, NULL) == -1) {
         perror ("failure initializing SIGHUP action");
         exit (EXIT_FAILURE);
@@ -382,11 +382,11 @@ main (int argc, char **argv)
                     "failure waiting for init after %d intervals\n", tn);
                 exit (EXIT_FAILURE);
             }
-            (void) umask (S_IWGRP | S_IRWXO);
-            if (chdir ("/") == -1) {
-                perror ("failure changing working directory");
-                exit (EXIT_FAILURE);
-            }
+            /* (void) umask (S_IWGRP | S_IRWXO); */
+            /* if (chdir ("/") == -1) { */
+            /*     perror ("failure changing working directory"); */
+            /*     exit (EXIT_FAILURE); */
+            /* } */
             if ((lockdir = strdup (rundir)) == NULL) {
                 perror ("failure allocating rundir");
                 exit (EXIT_FAILURE);
