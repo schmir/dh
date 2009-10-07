@@ -86,13 +86,23 @@ clear_environment()
 
     *environ = NULL;
     if (setenv ("SHELL", "/bin/sh", 1) == -1) {
-	printf ("failure setting SHELL: %s\n", strerror (errno));
-	exit (EXIT_FAILURE);
+        printf ("failure setting SHELL: %s\n", strerror (errno));
+        exit (EXIT_FAILURE);
     }
     if (setenv ("PATH", path, 1) == -1) {
-	printf ("failure setting PATH: %s\n", strerror (errno));
-	exit (EXIT_FAILURE);
+        printf ("failure setting PATH: %s\n", strerror (errno));
+        exit (EXIT_FAILURE);
     }
+}
+
+void xsigaction(int signal, struct sigaction *now)
+{
+        static char err[64];
+        if (sigaction(signal, now, NULL)==-1) {
+                sprintf(err, "failure initializing signal %d", signal);
+                perror(err);
+                exit(EXIT_FAILURE);
+        }
 }
 
 int
@@ -136,9 +146,9 @@ main (int argc, char **argv)
                 usage = 1;
             }
             break;
-	case 'c':
-	    clear = 1;
-	    break;
+        case 'c':
+            clear = 1;
+            break;
         default:
             usage = 1;
         }
@@ -172,79 +182,26 @@ main (int argc, char **argv)
     (void) sigfillset (&signow.sa_mask);
     signow.sa_flags = 0;
     signow.sa_handler = SIG_DFL;
-    if (sigaction (SIGINT, &signow, NULL) == -1) {
-        perror ("failure initializing SIGINT action");
-        exit (EXIT_FAILURE);
-    }
-    if (sigaction (SIGQUIT, &signow, NULL) == -1) {
-        perror ("failure initializing SIGQUIT action");
-        exit (EXIT_FAILURE);
-    }
-    if (sigaction (SIGTSTP, &signow, NULL) == -1) {
-        perror ("failure initializing SIGTSTP action");
-        exit (EXIT_FAILURE);
-    }
-    if (sigaction (SIGTTIN, &signow, NULL) == -1) {
-        perror ("failure initializing SIGTTIN action");
-        exit (EXIT_FAILURE);
-    }
-    if (sigaction (SIGTTOU, &signow, NULL) == -1) {
-        perror ("failure initializing SIGTTOU action");
-        exit (EXIT_FAILURE);
-    }
+    xsigaction (SIGINT  , &signow);
+    xsigaction (SIGQUIT , &signow);
+    xsigaction (SIGTSTP , &signow);
+    xsigaction (SIGTTIN , &signow);
+    xsigaction (SIGTTOU , &signow);
     /* signow.sa_handler = SIG_DFL; */
-    if (sigaction (SIGHUP, &signow, NULL) == -1) {
-        perror ("failure initializing SIGHUP action");
-        exit (EXIT_FAILURE);
-    }
-    if (sigaction (SIGILL, &signow, NULL) == -1) {
-        perror ("failure initializing SIGILL action");
-        exit (EXIT_FAILURE);
-    }
-    if (sigaction (SIGABRT, &signow, NULL) == -1) {
-        perror ("failure initializing SIGABRT action");
-        exit (EXIT_FAILURE);
-    }
-    if (sigaction (SIGBUS, &signow, NULL) == -1) {
-        perror ("failure initializing SIGBUS action");
-        exit (EXIT_FAILURE);
-    }
-    if (sigaction (SIGFPE, &signow, NULL) == -1) {
-        perror ("failure initializing SIGFPE action");
-        exit (EXIT_FAILURE);
-    }
-    if (sigaction (SIGSEGV, &signow, NULL) == -1) {
-        perror ("failure initializing SIGSEGV action");
-        exit (EXIT_FAILURE);
-    }
-    if (sigaction (SIGPIPE, &signow, NULL) == -1) {
-        perror ("failure initializing SIGPIPE action");
-        exit (EXIT_FAILURE);
-    }
-    if (sigaction (SIGALRM, &signow, NULL) == -1) {
-        perror ("failure initializing SIGALRM action");
-        exit (EXIT_FAILURE);
-    }
-    if (sigaction (SIGTERM, &signow, NULL) == -1) {
-        perror ("failure initializing SIGTERM action");
-        exit (EXIT_FAILURE);
-    }
-    if (sigaction (SIGUSR1, &signow, NULL) == -1) {
-        perror ("failure initializing SIGUSR1 action");
-        exit (EXIT_FAILURE);
-    }
-    if (sigaction (SIGUSR2, &signow, NULL) == -1) {
-        perror ("failure initializing SIGUSR2 action");
-        exit (EXIT_FAILURE);
-    }
-    if (sigaction (SIGCHLD, &signow, NULL) == -1) {
-        perror ("failure initializing SIGCHLD action");
-        exit (EXIT_FAILURE);
-    }
-    if (sigaction (SIGCONT, &signow, NULL) == -1) {
-        perror ("failure initializing SIGCONT action");
-        exit (EXIT_FAILURE);
-    }
+    xsigaction (SIGHUP  , &signow);
+    xsigaction (SIGILL  , &signow);
+    xsigaction (SIGABRT , &signow);
+    xsigaction (SIGBUS  , &signow);
+    xsigaction (SIGFPE  , &signow);
+    xsigaction (SIGSEGV , &signow);
+    xsigaction (SIGPIPE , &signow);
+    xsigaction (SIGALRM , &signow);
+    xsigaction (SIGTERM , &signow);
+    xsigaction (SIGUSR1 , &signow);
+    xsigaction (SIGUSR2 , &signow);
+    xsigaction (SIGCHLD , &signow);
+    xsigaction (SIGCONT , &signow);
+
     if ((open_max = (int) sysconf (_SC_OPEN_MAX)) == -1) {
         fprintf (stderr, "failure querying _SC_OPEN_MAX: %s\n",
             strerror (errno));
@@ -516,9 +473,9 @@ main (int argc, char **argv)
                     strerror (errno));
                 exit (EXIT_FAILURE);
             }
-	    if (clear) {
-		clear_environment();
-	    }
+            if (clear) {
+                clear_environment();
+            }
             printf ("%d\n", getpid ());
             printf ("PGID=%d\n", getpgrp ());
             for (that = environ; that && *that; that++) {
