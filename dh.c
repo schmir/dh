@@ -4,7 +4,7 @@
 
   schmir's daemon helper - easily start programs in background
   
-  Last changed: 2009-10-09 00:03:49 by ralf
+  Last changed: 2009-10-09 00:52:13 by ralf
 
 */
 
@@ -21,11 +21,15 @@
 
 #define rundir "/var/run/dh/"
 
+
 extern char **environ;
 
 void usage()
 {
 	printf("Usage: dh [-c] [-p lockfile] command ...\n");
+#ifdef DHVERSION
+	printf("[%s]\n", DHVERSION);
+#endif
 	exit(1);
 }
 
