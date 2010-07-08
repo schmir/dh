@@ -19,7 +19,7 @@
 #include <sys/file.h>
 #include <fcntl.h>
 
-#define rundir "/var/run/dh/"
+#define rundir "/var/log/dh/"
 
 
 extern char **environ;
