@@ -18,6 +18,7 @@
 #include <sys/stat.h>
 #include <sys/file.h>
 #include <fcntl.h>
+#include <libgen.h>
 
 #define rundir "/var/log/dh/"
 
