@@ -30,7 +30,6 @@ void usage()
 #ifdef DHVERSION
 	printf("[%s]\n", DHVERSION);
 #endif
-	exit(1);
 }
 
 int set_close_on_exec(fd)
@@ -110,8 +109,11 @@ int main(int argc, char * const argv[])
 			lockfile = optarg;
 			break;
 		case 'h':
+			usage();
+			exit(0);
 		default:
 			usage();
+			exit(1);
 		}
 	}
 	
